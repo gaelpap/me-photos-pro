@@ -39,8 +39,7 @@ export async function POST(req: Request) {
   if (event.type === 'checkout.session.completed') {
     console.log('Checkout session completed');
     const session = event.data.object as Stripe.Checkout.Session;
-    const userId = session.metadata?.userId;
-    const referralId = session.client_reference_id;
+    const userId = session.metadata?.userId; // Get userId from metadata
 
     if (userId) {
       console.log('Updating credits for user:', userId);
@@ -75,12 +74,6 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unknown product purchased' }, { status: 400 });
           }
         });
-
-        if (referralId) {
-          console.log(`Processing referral for ID: ${referralId}`);
-          // Implement your affiliate reward logic here
-        }
-
         return NextResponse.json({ received: true });
       } catch (error) {
         console.error('Error updating user credits:', error);

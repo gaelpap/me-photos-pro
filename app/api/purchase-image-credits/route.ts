@@ -26,8 +26,8 @@ export async function POST(req: Request) {
 
     const userId = decodedToken.uid;
 
-    // Extract referral ID from request body
-    const { referral } = await req.json();
+    // Extract referral ID and email from request body
+    const { referral, email } = await req.json();
 
     // Get user data from Firestore
     const db = getFirestore();
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
     if (!customerId) {
       // Create a new Stripe customer
       const customer = await stripe.customers.create({
-        email: userData.email,
+        email: email || userData.email,
         metadata: {
           firebaseUID: userId,
         },
@@ -70,9 +70,9 @@ export async function POST(req: Request) {
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
-      client_reference_id: referral || '', // Use referral as client_reference_id for affiliate tracking
+      client_reference_id: referral || '', // Set referral as client_reference_id
       metadata: {
-        userId: userId,
+        userId: userId, // Move userId to metadata
       },
     });
 
