@@ -15,9 +15,6 @@ import Image from 'next/image';
 import { Select } from "@/components/ui/select"
 import { useSearchParams } from 'next/navigation';
 
-declare const rewardful: any;
-declare const Rewardful: any;
-
 interface LoRA {
   path: string;
   scale: number;
@@ -33,7 +30,6 @@ export function Page() {
   const [credits, setCredits] = useState(0);
   const [language, setLanguage] = useState('en')
   const [translatedPrompt, setTranslatedPrompt] = useState('')
-  const [referral, setReferral] = useState<string | null>(null);
   const searchParams = useSearchParams();
 
   const router = useRouter()
@@ -58,16 +54,6 @@ export function Page() {
     });
 
     return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).rewardful) {
-      rewardful('ready', function() {
-        if (Rewardful.referral) {
-          setReferral(Rewardful.referral);
-        }
-      });
-    }
   }, []);
 
   const handleAddLora = () => {
@@ -192,7 +178,6 @@ export function Page() {
           'Authorization': `Bearer ${idToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ referral, email: user.email }),
       });
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
