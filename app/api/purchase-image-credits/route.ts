@@ -29,8 +29,37 @@ export async function POST(req: Request) {
     // Extract referral ID from request body
     const { referral } = await req.json();
 
+    // Get user data from Firestore
+    const db = getFirestore();
+    const userDoc = await db.collection('users').doc(userId).get();
+    const userData = userDoc.data();
+
+    if (!userData) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
+    // Check if user already has a Stripe customer ID
+    let customerId = userData.stripeCustomerId;
+
+    if (!customerId) {
+      // Create a new Stripe customer
+      const customer = await stripe.customers.create({
+        email: userData.email,
+        metadata: {
+          firebaseUID: userId,
+        },
+      });
+      customerId = customer.id;
+
+      // Save the Stripe customer ID to Firestore
+      await db.collection('users').doc(userId).update({
+        stripeCustomerId: customerId,
+      });
+    }
+
     // Create Stripe Checkout session
     const session = await stripe.checkout.sessions.create({
+      customer: customerId,
       payment_method_types: ['card'],
       line_items: [
         {
