@@ -16,6 +16,7 @@ async function ensureUserDocument(userId: string) {
     console.log('Creating new user document for userId:', userId);
     await userRef.set({
       loraCredits: 0,
+      imageCredits: 0,
       createdAt: new Date()
     });
   }
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
     console.log('Checkout session completed');
     const session = event.data.object as Stripe.Checkout.Session;
     const userId = session.metadata?.userId; // Get userId from metadata
+    const referralId = session.client_reference_id; // Get referral ID from client_reference_id
 
     if (userId) {
       console.log('Updating credits for user:', userId);
@@ -74,6 +76,16 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unknown product purchased' }, { status: 400 });
           }
         });
+
+        // Handle Rewardful referral
+        if (referralId) {
+          console.log(`Processing referral for ID: ${referralId}`);
+          // Implement your Rewardful referral logic here
+          // This might involve updating the referrer's credits or recording the referral
+          // For example:
+          // await processReferral(referralId, userId);
+        }
+
         return NextResponse.json({ received: true });
       } catch (error) {
         console.error('Error updating user credits:', error);
@@ -87,3 +99,9 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ received: true });
 }
+
+// Implement this function based on your Rewardful integration requirements
+// async function processReferral(referralId: string, userId: string) {
+//   // Add your Rewardful referral processing logic here
+//   console.log(`Processing referral: ${referralId} for user: ${userId}`);
+// }
