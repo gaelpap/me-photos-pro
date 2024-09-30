@@ -39,7 +39,7 @@ export async function POST(req: Request) {
   if (event.type === 'checkout.session.completed') {
     console.log('Checkout session completed');
     const session = event.data.object as Stripe.Checkout.Session;
-    const userId = session.metadata?.userId; // Get userId from metadata
+    const userId = session.client_reference_id;
 
     if (userId) {
       console.log('Updating credits for user:', userId);
@@ -80,8 +80,8 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: 'Failed to update user credits', details: error.message }, { status: 500 });
       }
     } else {
-      console.error('No userId found in session metadata');
-      return NextResponse.json({ error: 'No userId found in session metadata' }, { status: 400 });
+      console.error('No userId found in session');
+      return NextResponse.json({ error: 'No userId found in session' }, { status: 400 });
     }
   }
 
