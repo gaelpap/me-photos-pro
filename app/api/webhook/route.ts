@@ -39,8 +39,8 @@ export async function POST(req: Request) {
   if (event.type === 'checkout.session.completed') {
     console.log('Checkout session completed');
     const session = event.data.object as Stripe.Checkout.Session;
-    const userId = session.metadata?.userId; // Get userId from metadata
-    const referralId = session.client_reference_id; // Get referral ID for Rewardful
+    const userId = session.metadata?.userId;
+    const referralId = session.client_reference_id;
 
     if (userId) {
       console.log('Updating credits for user:', userId);
@@ -76,10 +76,9 @@ export async function POST(req: Request) {
           }
         });
 
-        // Handle Rewardful referral if present
         if (referralId) {
           console.log(`Processing referral for ID: ${referralId}`);
-          // Implement your Rewardful referral logic here if needed
+          // Implement your affiliate reward logic here
         }
 
         return NextResponse.json({ received: true });
