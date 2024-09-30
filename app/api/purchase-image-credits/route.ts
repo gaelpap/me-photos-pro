@@ -70,10 +70,9 @@ export async function POST(req: Request) {
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
-      client_reference_id: userId,
+      client_reference_id: referral || '', // Set referral as client_reference_id
       metadata: {
-        userId: userId,
-        referral: referral || '',
+        userId: userId, // Move userId to metadata
       },
     });
 
