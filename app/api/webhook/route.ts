@@ -57,13 +57,13 @@ export async function POST(req: Request) {
           const lineItems = await stripe.checkout.sessions.listLineItems(session.id);
           const purchasedItem = lineItems.data[0];
           
-          if (purchasedItem.price.id === 'price_1Q2f46EI2MwEjNuQqxAJwo79') {
+          if (purchasedItem.price.id === 'price_1Q9Rh2EI2MwEjNuQ5w6pQxOZ') {
             // Image credits purchase
             transaction.update(userRef, {
               imageCredits: currentImageCredits + IMAGE_CREDITS_PER_PURCHASE
             });
             console.log(`Added ${IMAGE_CREDITS_PER_PURCHASE} image credits to user ${userId}`);
-          } else if (purchasedItem.price.id === 'price_1Q2cMtEI2MwEjNuQOwcPYUCk') {
+          } else if (purchasedItem.price.id === 'price_1Q9RfGEI2MwEjNuQj3gbjUvX') {
             // Lora credits purchase
             transaction.update(userRef, {
               loraCredits: currentLoraCredits + CREDITS_PER_PURCHASE

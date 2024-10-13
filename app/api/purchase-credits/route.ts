@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2022-11-15',
 });
 
-const LORA_CREDITS_PRICE_ID = 'price_1Q2cMtEI2MwEjNuQOwcPYUCk';
+const LORA_CREDITS_PRICE_ID = 'price_1Q9RfGEI2MwEjNuQj3gbjUvX';
 
 export async function POST(req: Request) {
   try {
